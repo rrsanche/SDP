@@ -195,6 +195,7 @@ void Switches(void){
 
 //Function for sending data over UART
 void Uart(void){
+    //variable needed to use PutChar
     UINT8 send;
     int i = 0;
     int count = 0;
@@ -205,21 +206,25 @@ void Uart(void){
             count++;
         }
         if(count == 1){
+            //Delay for UART
             for(i = 0;i<30000;i++){}
             send = packA * 10;
             send = send % 10;
             send = packA - (send/10);
+            //Addition done at this end because of Raspberry Pi interface, subtracted at other end
             send = send + 40;
             PutChar(send);
             count++;
         }
         if(count == 2){
+            //Delay for UART
             for(i = 0;i<30000;i++){}
             send = 98;
             PutChar(send);
             count++;
         }
         if(count == 3){
+            //Delay for UART
             for(i = 0;i<30000;i++){}
             send = packB * 10;
             send = send % 10;
@@ -229,19 +234,23 @@ void Uart(void){
             count++;
         }
         if(count == 4){
+            //Delay for UART
             for(i = 0;i<30000;i++){}
             send = 104;
             PutChar(send);
             count++;
         }
         if(count == 5){
+            //Delay for UART
             for(i = 0;i<30000;i++){}
             send = hall+40;
             PutChar(send);
             count++;
         }
         if(count == 6){
+            //Delay for UART
             for(i = 0;i<30000;i++){}
+            //Sends a number based off of the state of the battery switches to allow GUI to update properly
             if(batteryAFlag){
                 if(packBIn == 1){
                     send = 121;
@@ -278,7 +287,7 @@ void Uart(void){
 
     }
 }
-
+//Solar sensor control, motor movement needs to be added
 void SolarSensor(void){
     if((solarSensorNorth - solarSensorSouth >= .1) || (solarSensorSouth - solarSensorNorth >= .1)){
         if((solarSensorEast - solarSensorWest >= .1) || (solarSensorWest - solarSensorEast >= .1)){
@@ -322,7 +331,7 @@ void SolarSensor(void){
 
 
 
-
+//Function to make motors turn based off of PWM 2 seconds in each direction. Not implinented in final code.
 void Motors(void){
     int x = 0;
     InitTimer(0,2000);
