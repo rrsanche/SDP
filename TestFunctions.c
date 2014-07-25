@@ -8,6 +8,7 @@
 #include <timers.h>
 #include <pwm.h>
 
+//Pins to transistors for battery banks
 #define packAIn PORTY11_LAT
 #define packAOut PORTZ03_LAT
 #define packBIn PORTZ04_LAT
@@ -17,27 +18,39 @@
 #define loadAGround PORTZ09_LAT
 #define loadBGround PORTY07_LAT
 
+//Variable for Voltage levels of battery packs
 float packA = 0;
 float packB = 0;
+//Solar Sensor Variables
 float solarSensorNorth = 0;
 float solarSensorSouth = 0;
 float solarSensorEast = 0;
 float solarSensorWest = 0;
 float batteryAFlag = 1;
+//Flags for if the battery is discharging
 float batteryBFlag = 0;
+//hard coded values for battery charge levels
 float lowBattery1 = 7;
 float lowBattery2 = 6;
 float highBattery = 13;
+//Variable for system being on or off
 int systemOn = 1;
+//variable for storing hall effect sensor value
 int hall = 0;
 
+//Function calls all needed INIT fucntions
+//Sets PWM settings
+//Sets Pins to be used
 void Init(void){
+    //Init functions
     BOARD_Init();
     SERIAL_Init();
     TIMERS_Init();
     AD_Init();
     PWM_Init();
+    //Setting PWM
     PWM_AddPins(PWM_PORTZ06|PWM_PORTY12);
+    //Setting Interrupts
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
     INTEnableInterrupts();
     PWM_SetFrequency(PWM_5KHZ);
@@ -52,9 +65,10 @@ void Init(void){
     PORTY07_TRIS = 0;
     PORTZ09_TRIS = 0;
     PORTY07_TRIS = 0;
-    //Add AD ports to read from
+    //Add AD pins to read from
     AD_AddPins(AD_PORTV3|AD_PORTV4|AD_PORTV5|AD_PORTV6|AD_PORTV7|AD_PORTV8);
 
+    //Set Pins to give signals for solar sensor and turn pin on
     PORTY03_TRIS = 0;
     PORTY03_LAT = 1;
 
@@ -68,7 +82,10 @@ void Init(void){
     PORTY06_LAT = 1;
 }
 
+
+//Function to real all pins
 void ReadSensors(void){
+    //read pin and convert it to a number between 0-12
     packA = AD_ReadADPin(AD_PORTV3);
     packA = (packA/1023)*3.3;
     packA = packA*1.3/(.3);
@@ -96,6 +113,7 @@ void ReadSensors(void){
     //printf("\n West %f", solarSensorWest);
 }
 
+//Function to controll the battery switches
 void Switches(void){
     if(systemOn){
 
@@ -175,7 +193,7 @@ void Switches(void){
 }
 
 
-
+//Function for sending data over UART
 void Uart(void){
     UINT8 send;
     int i = 0;
