@@ -17,6 +17,10 @@
 #define batteryBGround PORTY07_LAT
 #define loadAGround PORTZ09_LAT
 #define loadBGround PORTY07_LAT
+#define motor1Pin1 PORTXXXX
+#define motor1Pin2 PORTXXXX
+#define motor2Pin1 PORTXXXX
+#define motor2Pin2 PORTXXXX
 
 //Variable for Voltage levels of battery packs
 float packA = 0;
@@ -295,9 +299,17 @@ void SolarSensor(void){
         }
         else if(solarSensorWest > solarSensorEast){
             printf("Move West side down and East side up");
+            while(solarSensorWest > solarSensorEast){
+                motor2Pin1 = 1;
+            }
+            motor2Pin1 = 0;
         }
         else if(solarSensorEast > solarSensorWest){
             printf("Move east side down and West side up");
+            while(solarSensorWest < solarSensorEast){
+                motor2Pin2 = 1;
+            }
+            motor2Pin2 = 0;
         }
     }
     else if((solarSensorEast - solarSensorWest >= .1) || (solarSensorWest - solarSensorEast >= .1)){
@@ -309,18 +321,41 @@ void SolarSensor(void){
         }
     }
     else if(solarSensorEast > solarSensorWest){
+        while(solarSensorEast > solarSensorWest){
+            motor2Pin2 = 1;
+        }
+        motor2Pin2 = 0;
         if(solarSensorNorth > solarSensorSouth){
+            while(solarSensorNorth > solarSensorSouth){
+                motor1Pin1 = 1;
+            }
+            motor1Pin1 = 0;
             printf("Move from East to North. Then move East side down and West side up");
         }
         else if(solarSensorSouth > solarSensorNorth){
+            while(solarSensorSouth > solarSensorNorth){
+                motor1Pin2 = 1;
+            }
+            motor1Pin2 = 0;
             printf("Move from East to South. Then move East side down and West side up");
         }
     }
     else if(solarSensorWest > solarSensorEast){
+        while(solarSensorEast < solarSensorWest){
+            motor2Pin1 = 1;
+        }
         if(solarSensorNorth > solarSensorSouth){
+            while(solarSensorNorth > solarSensorSouth){
+                motor1Pin1 = 1;
+            }
+            motor1Pin1 = 0;
             printf("Move from West to North. Then move West side down and East side up");
         }
         else if(solarSensorSouth > solarSensorNorth){
+            while(solarSensorSouth > solarSensorNorth){
+                motor1Pin2 = 1;
+            }
+            motor1Pin2 = 0;
             printf("Move from West to South. Then move West side down and East side up");
         }
     }
